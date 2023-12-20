@@ -1,0 +1,46 @@
+From: =?utf-8?b?UGV0ciBQw61zYcWZ?= <ppisar@redhat.com>
+Date: Mon, 31 Jul 2023 10:33:13 +0200
+Subject: Adapt tests to glib-2.77
+
+After upgrading glib from 2.76 to 2.77, a t/g.t test started to fail:
+
+    #   Failed test at t/g.t line 99.
+    #          got: 'another comment
+    # '
+    #     expected: '#another comment
+    # #'
+    # Looks like you failed 1 test of 33.
+    t/g.t ......................
+    Dubious, test returned 1 (wstat 256, 0x100)
+    Failed 1/33 subtests
+
+The missing hash characters was an intentional change in glib
+<https://gitlab.gnome.org/GNOME/glib/-/issues/3056>.
+
+This patch adapts the test.
+
+Bug: https://gitlab.gnome.org/GNOME/perl-glib/-/issues/3
+Bug-Debian: https://bugs.debian.org/1042551
+Origin: https://gitlab.gnome.org/ppisar/perl-glib/-/commit/c181d151b1cec06df1455fdc9a9055ec0440140e
+
+---
+ t/g.t | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/t/g.t b/t/g.t
+index 4c7cd2c..d48a311 100644
+--- a/t/g.t
++++ b/t/g.t
+@@ -96,7 +96,11 @@ SKIP: {
+ 	$key_file->set_comment('locales', 'mystring', 'comment');
+ 	like ($key_file->get_comment('locales', 'mystring'), qr/^comment$/);
+ 	$key_file->set_comment('locales', undef, "another comment\n");
+-	is ($key_file->get_comment('locales', undef), "#another comment\n#");
++	is ($key_file->get_comment('locales', undef),
++		Glib::major_version > 2 ||
++		(Glib::major_version == 2 && Glib::minor_version >= 77) ?
++		"another comment\n" : "#another comment\n#"
++	);
+ 	$key_file->set_comment(undef, undef, 'one comment more');
+ 	like ($key_file->get_comment(undef, undef), qr/^one comment more$/);
+ 	$key_file->set_boolean($start_group, 'boolkey', FALSE);
