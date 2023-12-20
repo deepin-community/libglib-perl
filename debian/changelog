@@ -1,3 +1,16 @@
+libglib-perl (3:1.329.3-3) unstable; urgency=medium
+
+  * Team upload.
+
+  [ Jeremy Bícha ]
+  * Cherry-pick patch to update tests for glib 2.77 (Closes: #1042551)
+
+  [ gregor herrmann ]
+  * Refresh lintian overrides.
+  * Declare compliance with Debian Policy 4.6.2.
+
+ -- gregor herrmann <gregoa@debian.org>  Wed, 02 Aug 2023 19:05:21 +0200
+
 libglib-perl (3:1.329.3-2) unstable; urgency=medium
 
   * Team upload.
